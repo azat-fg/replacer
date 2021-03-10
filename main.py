@@ -4,9 +4,12 @@ import shutil
 OUT_FOLDER = "out"
 
 
-def do_replace(i, pop_first=False):
+def do_replace(i, pop_first=False, dots=False):
     with open(i) as f:
-        content = f.read().replace(",", ".")
+        if dots:
+            content = f.read().replace(".", ",")
+        else:
+            content = f.read().replace(",", ".")
 
     if pop_first:
         lines = content.splitlines()
@@ -26,4 +29,4 @@ def main():
         if i.endswith(".dat"):
             do_replace(i, pop_first=True)
         elif i.endswith((".TXT", '.txt')):
-            do_replace(i)
+            do_replace(i, dots=True)
