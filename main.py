@@ -20,8 +20,8 @@ def do_replace(i, dots=False):
         new_lines = list()
         for line in lines:
             x, y = line.split()
-            x_new = float(x) * M_VAR
-            new_lines.append(f"{x_new}\t{y}")
+            x_new = '{:.14e}'.format(float(x) * M_VAR)
+            new_lines.append(f"{x_new}\t{y}".replace("e", "E"))
 
         content = "\n".join(new_lines)
 
