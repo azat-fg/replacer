@@ -2,19 +2,28 @@ import os
 import shutil
 
 OUT_FOLDER = "out"
+M_VAR = 1.00229526
 
 
-def do_replace(i, pop_first=False, dots=False):
+def do_replace(i, dots=False):
     with open(i) as f:
         if dots:
             content = f.read().replace(".", ",")
         else:
             content = f.read().replace(",", ".")
 
-    if pop_first:
+    if i.endswith(".dat"):
         lines = content.splitlines()
-        lines.pop(0)
-        content = "\n".join(lines)
+        if lines[0].startswith("X-Axis"):
+            lines.pop(0)
+
+        new_lines = list()
+        for line in lines:
+            x, y = line.split()
+            x_new = '{:.6e}'.format(float(x) * M_VAR)
+            new_lines.append(f"{x_new}\t{y}".replace("e", "E"))
+
+        content = "\n".join(new_lines)
 
     with open(f"{OUT_FOLDER}{os.sep}{i}", "w") as f:
         f.write(content)
@@ -26,7 +35,10 @@ def main():
     os.mkdir(OUT_FOLDER)
 
     for i in os.listdir():
-        if i.endswith(".dat"):
-            do_replace(i, pop_first=True)
-        elif i.endswith((".TXT", '.txt')):
-            do_replace(i, dots=True)
+        if i.endswith((".TXT", '.txt')):
+            dots = True
+        else:
+            dots = False
+
+        if i.endswith((".TXT", '.txt', '.dat')):
+            do_replace(i, dots=dots)
